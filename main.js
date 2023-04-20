@@ -72,7 +72,14 @@ showZones("https://data.wien.gv.at/daten/geo?service=WFS&request=GetFeature&vers
 async function showSites(url) {
     let response = await fetch(url);
     let jsondata = await response.json();
-    L.geoJSON(jsondata).addTo(themaLayer.sites);
+    L.geoJSON(jsondata, {
+        onEachFeature: function(feature, layer) {
+            let prop = feature.properties;
+            layer.bindPopup (prop.NAME);
+            console.log(feature.properties, prop.NAME);  
+        }
+    }).addTo(themaLayer.sites);
+
     console.log(response, jsondata)
 
 }
