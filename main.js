@@ -11,6 +11,13 @@ let stephansdom = {
 let map = L.map("map").setView([
     stephansdom.lat, stephansdom.lng
 ], 12);
+// thematische Layer
+let themaLayer = {
+    stops: L.featureGroup(),
+    lines: L.featureGroup(),
+    zones: L.featureGroup(),
+    sites: L.featureGroup()
+}
 
 // Hintergrundlayer
 let layerControl = L.control.layers({
@@ -21,12 +28,13 @@ let layerControl = L.control.layers({
     "BasemapAT Oberfläche": L.tileLayer.provider("BasemapAT.surface"),
     "BasemapAT Orthofoto": L.tileLayer.provider("BasemapAT.orthofoto"),
     "BasemapAT Beschriftung": L.tileLayer.provider("BasemapAT.overlay")
+}, {
+    "Vienna Sightseeing Haltestellen": themaLayer.stops, 
+    "Vienna Sightseeing Linien": themaLayer.lines, 
+    "Fußgängerzonen": themaLayer.zones, 
+    "Sehenswürdigkeiten": themaLayer.sites
 }).addTo(map);
 
-// Marker Stephansdom
-L.marker([
-    stephansdom.lat, stephansdom.lng
-]).addTo(map).bindPopup(stephansdom.title).openPopup();
 
 // Maßstab
 L.control.scale({
@@ -40,6 +48,32 @@ async function showStops(url) {
     L.geoJSON(jsondata).addTo(map);
     console.log(response, jsondata)
 }
-showStops ("https://data.wien.gv.at/daten/geo?service=WFS&request=GetFeature&version=1.1.0&typeName=ogdwien:TOURISTIKHTSVSLOGD&srsName=EPSG:4326&outputFormat=json");
+showStops("https://data.wien.gv.at/daten/geo?service=WFS&request=GetFeature&version=1.1.0&typeName=ogdwien:TOURISTIKHTSVSLOGD&srsName=EPSG:4326&outputFormat=json");
 
+// Vienna Sightseeing Linien
+async function showLines(url) {
+    let response = await fetch(url);
+    let jsondata = await response.json();
+    L.geoJSON(jsondata).addTo(map);
+    console.log(response, jsondata)
+}
+showLines("https://data.wien.gv.at/daten/geo?service=WFS&request=GetFeature&version=1.1.0&typeName=ogdwien:TOURISTIKLINIEVSLOGD&srsName=EPSG:4326&outputFormat=json")
 
+// Vienna Fußgängerzonen
+async function showZones(url) {
+    let response = await fetch(url);
+    let jsondata = await response.json();
+    L.geoJSON(jsondata).addTo(map);
+    console.log(response, jsondata)
+}
+showZones("https://data.wien.gv.at/daten/geo?service=WFS&request=GetFeature&version=1.1.0&typeName=ogdwien:FUSSGEHERZONEOGD&srsName=EPSG:4326&outputFormat=json")
+
+// Vienna Sehenswürdigkeiten
+async function showSites(url) {
+    let response = await fetch(url);
+    let jsondata = await response.json();
+    L.geoJSON(jsondata).addTo(map);
+    console.log(response, jsondata)
+
+}
+showSites("https://data.wien.gv.at/daten/geo?service=WFS&request=GetFeature&version=1.1.0&typeName=ogdwien:SEHENSWUERDIGOGD&srsName=EPSG:4326&outputFormat=json")
