@@ -61,13 +61,30 @@ async function showStops(url) {
 showStops("https://data.wien.gv.at/daten/geo?service=WFS&request=GetFeature&version=1.1.0&typeName=ogdwien:TOURISTIKHTSVSLOGD&srsName=EPSG:4326&outputFormat=json");
 
 // Vienna Sightseeing Linien
+
 async function showLines(url) {
     let response = await fetch(url);
     let jsondata = await response.json();
-    L.geoJSON(jsondata).addTo(themaLayer.lines);
-    //console.log(response, jsondata)
+    L.geoJSON(jsondata, {
+        onEachFeature: function (feature, layer) {
+            let prop = feature.properties; //Variable damit kürzer; * steht als Platzhalter für Bildunterschrift, Link für Infos, nur 1 Tab für Links
+            layer.bindPopup(`
+            <line><i class="fa-solid fa-bus"></i> ${prop.LINE_NAME}</line> </br></br>
+            <start><i class="fa-regular fa-circle-stop"></i> ${prop.FROM_NAME}</start></br>
+            <i class="fa-sharp fa-solid fa-arrow-down"></i></br>
+            <end><i class="fa-regular fa-circle-stop"></i> ${prop.TO_NAME}</end>
+            `);
+            console.log(prop.NAME);
+        }
+    }).addTo(themaLayer.lines);
+    //console.log(response);
 }
-showLines("https://data.wien.gv.at/daten/geo?service=WFS&request=GetFeature&version=1.1.0&typeName=ogdwien:TOURISTIKLINIEVSLOGD&srsName=EPSG:4326&outputFormat=json")
+showLines("https://data.wien.gv.at/daten/geo?service=WFS&request=GetFeature&version=1.1.0&typeName=ogdwien:TOURISTIKLINIEVSLOGD&srsName=EPSG:4326&outputFormat=json");
+
+
+
+
+
 
 // Vienna Fußgängerzonen
 async function showZones(url) {
