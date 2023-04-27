@@ -16,8 +16,8 @@ let map = L.map("map").setView([
 let themaLayer = {
     stops: L.featureGroup(),
     lines: L.featureGroup(),
-    zones: L.featureGroup().addTo(map),
-    sites: L.featureGroup()
+    zones: L.featureGroup(),
+    sites: L.featureGroup().addTo(map),
 }
 
 // Hintergrundlayer
@@ -129,11 +129,21 @@ async function showZones(url) {
 }
 showZones("https://data.wien.gv.at/daten/geo?service=WFS&request=GetFeature&version=1.1.0&typeName=ogdwien:FUSSGEHERZONEOGD&srsName=EPSG:4326&outputFormat=json");
 
+
 // Vienna Sehenswürdigkeiten
 async function showSites(url) {
     let response = await fetch(url);
     let jsondata = await response.json();
     L.geoJSON(jsondata, {
+        pointToLayer: function(feature, latlng) {
+            return L.marker(latlng, {
+                icon: L.icon({
+                    iconUrl: "icons/photo.png",
+                    iconAnchor: [16, 37],
+                    popupAnchor: [0, -37],
+                })
+            });
+        },
         onEachFeature: function (feature, layer) {
             let prop = feature.properties;
             layer.bindPopup(`
