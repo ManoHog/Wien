@@ -8,9 +8,10 @@ let stephansdom = {
 };
 
 // Karte initialisieren
-let map = L.map("map").setView([
+let map = L.map ("map").setView ([
     stephansdom.lat, stephansdom.lng
 ], 12);
+
 // thematische Layer
 let themaLayer = {
     stops: L.featureGroup(),
@@ -64,6 +65,7 @@ async function showZones(url) {
     let response = await fetch(url);
     let jsondata = await response.json();
     L.geoJSON(jsondata).addTo(themaLayer.zones);
+    
     //console.log(response, jsondata)
 }
 showZones("https://data.wien.gv.at/daten/geo?service=WFS&request=GetFeature&version=1.1.0&typeName=ogdwien:FUSSGEHERZONEOGD&srsName=EPSG:4326&outputFormat=json")
@@ -88,3 +90,15 @@ async function showSites(url) {
 
 }
 showSites("https://data.wien.gv.at/daten/geo?service=WFS&request=GetFeature&version=1.1.0&typeName=ogdwien:SEHENSWUERDIGOGD&srsName=EPSG:4326&outputFormat=json")
+
+
+
+
+
+
+map.addControl(new L.Control.Fullscreen({
+    title: {
+        'false': 'View Fullscreen',
+        'true': 'Exit Fullscreen'
+    }
+}));
