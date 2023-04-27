@@ -15,8 +15,8 @@ let map = L.map("map").setView([
 // thematische Layer
 let themaLayer = {
     stops: L.featureGroup(),
-    lines: L.featureGroup().addTo(map),
-    zones: L.featureGroup(),
+    lines: L.featureGroup(),
+    zones: L.featureGroup().addTo(map),
     sites: L.featureGroup()
 }
 
@@ -63,8 +63,26 @@ showStops("https://data.wien.gv.at/daten/geo?service=WFS&request=GetFeature&vers
 async function showLines(url) {
     let response = await fetch(url);
     let jsondata = await response.json();
-    let lineNames = {}
+    let lineNames = {};
+    let lineColors = { //http://clrs.cc/
+        "1": "#FF4136", //Red Line
+        "2": "#FFDC00", //Yellow Line
+        "3": "#0074D9", //Blue Line
+        "4": "#2ECC40", //Green Line
+        "5": "#AAAAAA", //Grey Line
+        "6": "#FF851b", //Orange Line 
+    }
+
     L.geoJSON(jsondata, {
+        style: function (feature) {
+            return {
+                color: lineColors[feature.properties.LINE_ID],
+                weight: 3,
+                dashArray: [10, 4],
+
+            };
+        },
+
         onEachFeature: function (feature, layer) {
             let prop = feature.properties;
             layer.bindPopup(`
@@ -85,7 +103,17 @@ showLines("https://data.wien.gv.at/daten/geo?service=WFS&request=GetFeature&vers
 async function showZones(url) {
     let response = await fetch(url);
     let jsondata = await response.json();
+
     L.geoJSON(jsondata, {
+        
+        style: function (feature) {
+            return {
+                color: "#F012BE",
+                opacity:0.4,
+                fillOpacity:0.1,
+            };
+        },
+
         onEachFeature: function (feature, layer) {
             let prop = feature.properties;
             layer.bindPopup(`
