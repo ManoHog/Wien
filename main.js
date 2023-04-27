@@ -8,7 +8,7 @@ let stephansdom = {
 };
 
 // Karte initialisieren
-let map = L.map ("map").setView ([
+let map = L.map("map").setView([
     stephansdom.lat, stephansdom.lng
 ], 12);
 
@@ -30,9 +30,9 @@ let layerControl = L.control.layers({
     "BasemapAT Orthofoto": L.tileLayer.provider("BasemapAT.orthofoto"),
     "BasemapAT Beschriftung": L.tileLayer.provider("BasemapAT.overlay")
 }, {
-    "Vienna Sightseeing Haltestellen": themaLayer.stops, 
-    "Vienna Sightseeing Linien": themaLayer.lines, 
-    "Fußgängerzonen": themaLayer.zones, 
+    "Vienna Sightseeing Haltestellen": themaLayer.stops,
+    "Vienna Sightseeing Linien": themaLayer.lines,
+    "Fußgängerzonen": themaLayer.zones,
     "Sehenswürdigkeiten": themaLayer.sites
 }).addTo(map);
 
@@ -52,9 +52,9 @@ async function showStops(url) {
             <line><i class="fa-solid fa-bus"></i> ${prop.LINE_NAME}</line> </br></br>
             <stop>${prop.STAT_ID} ${prop.STAT_NAME}</stop>
             `);
-        console.log(prop.NAME);
+            console.log(prop.NAME);
         }
-    }).addTo(themaLayer.stops);  
+    }).addTo(themaLayer.stops);
     //console.log(response, jsondata)
 }
 showStops("https://data.wien.gv.at/daten/geo?service=WFS&request=GetFeature&version=1.1.0&typeName=ogdwien:TOURISTIKHTSVSLOGD&srsName=EPSG:4326&outputFormat=json");
@@ -65,7 +65,7 @@ async function showLines(url) {
     let jsondata = await response.json();
     L.geoJSON(jsondata, {
         onEachFeature: function (feature, layer) {
-            let prop = feature.properties; 
+            let prop = feature.properties;
             layer.bindPopup(`
             <line><i class="fa-solid fa-bus"></i> ${prop.LINE_NAME}</line> </br></br>
             <start><i class="fa-regular fa-circle-stop"></i> ${prop.FROM_NAME}</start></br>
@@ -104,9 +104,9 @@ async function showSites(url) {
     let response = await fetch(url);
     let jsondata = await response.json();
     L.geoJSON(jsondata, {
-        onEachFeature: function(feature, layer) {
+        onEachFeature: function (feature, layer) {
             let prop = feature.properties;
-            layer.bindPopup (`
+            layer.bindPopup(`
             <img src="${prop.THUMBNAIL}" alt="*">
             <h4><a href="${prop.WEITERE_INF}" target=Wien">${prop.NAME}</h4>
             <adress>${prop.ADRESSE}</address>
