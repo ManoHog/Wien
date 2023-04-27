@@ -15,7 +15,7 @@ let map = L.map("map").setView([
 // thematische Layer
 let themaLayer = {
     stops: L.featureGroup(),
-    lines: L.featureGroup(). addTo(Map).
+    lines: L.featureGroup().addTo(map),
     zones: L.featureGroup(),
     sites: L.featureGroup()
 }
@@ -63,6 +63,7 @@ showStops("https://data.wien.gv.at/daten/geo?service=WFS&request=GetFeature&vers
 async function showLines(url) {
     let response = await fetch(url);
     let jsondata = await response.json();
+    let lineNames = {}
     L.geoJSON(jsondata, {
         onEachFeature: function (feature, layer) {
             let prop = feature.properties;
@@ -72,7 +73,8 @@ async function showLines(url) {
             <i class="fa-sharp fa-solid fa-arrow-down"></i></br>
             <end><i class="fa-regular fa-circle-stop"></i> ${prop.TO_NAME}</end>
             `);
-            //console.log(prop.NAME);
+            lineNames[prop.LINE_ID] = prop.LINE_NAME;
+            console.log(lineNames)
         }
     }).addTo(themaLayer.lines);
     //console.log(response);
