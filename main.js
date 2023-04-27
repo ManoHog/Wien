@@ -92,7 +92,7 @@ async function showLines(url) {
             <end><i class="fa-regular fa-circle-stop"></i> ${prop.TO_NAME}</end>
             `);
             lineNames[prop.LINE_ID] = prop.LINE_NAME;
-            console.log(lineNames)
+            //console.log(lineNames)
         }
     }).addTo(themaLayer.lines);
     //console.log(response);
@@ -145,7 +145,7 @@ async function showSites(url) {
         }
     }).addTo(themaLayer.sites);
 
-    console.log(response, jsondata)
+    //console.log(response, jsondata)
 
 }
 showSites("https://data.wien.gv.at/daten/geo?service=WFS&request=GetFeature&version=1.1.0&typeName=ogdwien:SEHENSWUERDIGOGD&srsName=EPSG:4326&outputFormat=json")
