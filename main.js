@@ -36,7 +36,6 @@ let layerControl = L.control.layers({
     "Sehenswürdigkeiten": themaLayer.sites
 }).addTo(map);
 
-
 // Maßstab
 L.control.scale({
     imperial: false,
@@ -61,13 +60,12 @@ async function showStops(url) {
 showStops("https://data.wien.gv.at/daten/geo?service=WFS&request=GetFeature&version=1.1.0&typeName=ogdwien:TOURISTIKHTSVSLOGD&srsName=EPSG:4326&outputFormat=json");
 
 // Vienna Sightseeing Linien
-
 async function showLines(url) {
     let response = await fetch(url);
     let jsondata = await response.json();
     L.geoJSON(jsondata, {
         onEachFeature: function (feature, layer) {
-            let prop = feature.properties; //Variable damit kürzer; * steht als Platzhalter für Bildunterschrift, Link für Infos, nur 1 Tab für Links
+            let prop = feature.properties; 
             layer.bindPopup(`
             <line><i class="fa-solid fa-bus"></i> ${prop.LINE_NAME}</line> </br></br>
             <start><i class="fa-regular fa-circle-stop"></i> ${prop.FROM_NAME}</start></br>
@@ -81,19 +79,25 @@ async function showLines(url) {
 }
 showLines("https://data.wien.gv.at/daten/geo?service=WFS&request=GetFeature&version=1.1.0&typeName=ogdwien:TOURISTIKLINIEVSLOGD&srsName=EPSG:4326&outputFormat=json");
 
-
-
-
-
-
-// Vienna Fußgängerzonen
+// Vienna Fußgängerzone
 async function showZones(url) {
     let response = await fetch(url);
     let jsondata = await response.json();
-    L.geoJSON(jsondata).addTo(themaLayer.zones);
-    //console.log(response, jsondata)
+    L.geoJSON(jsondata, {
+        onEachFeature: function (feature, layer) {
+            let prop = feature.properties;
+            layer.bindPopup(`
+            <ort>Fußgängerzone ${prop.ADRESSE}</ort></br></br>
+            <zeitraum><i class="fa-regular fa-clock"></i> ${prop.ZEITRAUM}</zeitraum></br></br>
+            <information><i class="fa-solid fa-circle-info"></i> ${prop.AUSN_TEXT}</information>
+
+            `);
+            console.log(prop.NAME);
+        }
+    }).addTo(themaLayer.zones);
+    //console.log(response);
 }
-showZones("https://data.wien.gv.at/daten/geo?service=WFS&request=GetFeature&version=1.1.0&typeName=ogdwien:FUSSGEHERZONEOGD&srsName=EPSG:4326&outputFormat=json")
+showZones("https://data.wien.gv.at/daten/geo?service=WFS&request=GetFeature&version=1.1.0&typeName=ogdwien:FUSSGEHERZONEOGD&srsName=EPSG:4326&outputFormat=json");
 
 // Vienna Sehenswürdigkeiten
 async function showSites(url) {
@@ -115,11 +119,6 @@ async function showSites(url) {
 
 }
 showSites("https://data.wien.gv.at/daten/geo?service=WFS&request=GetFeature&version=1.1.0&typeName=ogdwien:SEHENSWUERDIGOGD&srsName=EPSG:4326&outputFormat=json")
-
-
-
-
-
 
 map.addControl(new L.Control.Fullscreen({
     title: {
