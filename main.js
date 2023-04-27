@@ -189,16 +189,14 @@ async function showHotels(url) {
         onEachFeature: function (feature, layer) {
             let prop = feature.properties;
             layer.bindPopup(`
-
-            <h3>${BETRIEBE}</h3>
-            <h4>${BETRIEBSART_TXT} ${KATEGORIE_TXT}</h4>
+            <h3>${prop.BETRIEB}</h3>
+            <h4>${prop.BETRIEBSART_TXT} ${prop.KATEGORIE_TXT}</h4>
             <hr>
-            Addr.: ${ADRESSE}<br>
-            Tel.: ${KONTAKT_TEL} ">${prop.KONTAKT_TEL}</a><br>
+            Addr.: ${prop.ADRESSE}<br>
+            Tel.: ${prop.KONTAKT_TEL} ">${prop.KONTAKT_TEL}</a><br>
             <a href="mailto:${prop.KONTAKT_EMAIL}">${prop.KONTAKT_EMAIL}</a><br>
             <a href="${prop.WEBLINK1}">Hompage</a><br>
-                
-            `);
+        `);
             //console.log(feature.properties, prop.NAME);  
         }
     }).addTo(themaLayer.hotels);
