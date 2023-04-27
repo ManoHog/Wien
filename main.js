@@ -46,7 +46,16 @@ L.control.scale({
 async function showStops(url) {
     let response = await fetch(url);
     let jsondata = await response.json();
-    L.geoJSON(jsondata).addTo(themaLayer.stops);
+    L.geoJSON(jsondata, {
+        onEachFeature: function (feature, layer) {
+            let prop = feature.properties;
+            layer.bindPopup(`
+            <line><i class="fa-solid fa-bus"></i> ${prop.LINE_NAME}</line> </br></br>
+            <stop>${prop.STAT_ID} ${prop.STAT_NAME}</stop>
+            `);
+        console.log(prop.NAME);
+        }
+    }).addTo(themaLayer.stops);  
     //console.log(response, jsondata)
 }
 showStops("https://data.wien.gv.at/daten/geo?service=WFS&request=GetFeature&version=1.1.0&typeName=ogdwien:TOURISTIKHTSVSLOGD&srsName=EPSG:4326&outputFormat=json");
@@ -65,7 +74,6 @@ async function showZones(url) {
     let response = await fetch(url);
     let jsondata = await response.json();
     L.geoJSON(jsondata).addTo(themaLayer.zones);
-    
     //console.log(response, jsondata)
 }
 showZones("https://data.wien.gv.at/daten/geo?service=WFS&request=GetFeature&version=1.1.0&typeName=ogdwien:FUSSGEHERZONEOGD&srsName=EPSG:4326&outputFormat=json")
