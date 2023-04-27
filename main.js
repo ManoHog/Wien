@@ -17,7 +17,8 @@ let themaLayer = {
     stops: L.featureGroup().addTo(map),
     lines: L.featureGroup().addTo(map),
     zones: L.featureGroup().addTo(map),
-    sites: L.featureGroup().addTo(map)
+    sites: L.featureGroup().addTo(map),
+    hotels: L.featureGroup().addTo(map)
 }
 
 // Hintergrundlayer
@@ -33,7 +34,8 @@ let layerControl = L.control.layers({
     "Vienna Sightseeing Haltestellen": themaLayer.stops,
     "Vienna Sightseeing Linien": themaLayer.lines,
     "Fußgängerzonen": themaLayer.zones,
-    "Sehenswürdigkeiten": themaLayer.sites
+    "Sehenswürdigkeiten": themaLayer.sites,
+    "Hotels": themaLayer.hotels
 }).addTo(map);
 
 // Maßstab
@@ -169,6 +171,45 @@ async function showSites(url) {
 
 }
 showSites("https://data.wien.gv.at/daten/geo?service=WFS&request=GetFeature&version=1.1.0&typeName=ogdwien:SEHENSWUERDIGOGD&srsName=EPSG:4326&outputFormat=json")
+
+// Vienna Hotels und Unterkünfte
+async function showHotels(url) {
+    let response = await fetch(url);
+    let jsondata = await response.json();
+    L.geoJSON(jsondata, {
+        pointToLayer: function(feature, latlng) {
+            return L.marker(latlng, {
+                icon: L.icon({
+                    iconUrl: "icons/hotel.png",
+                    iconAnchor: [16, 37],
+                    popupAnchor: [0, -37],
+                })
+            });
+        },
+        onEachFeature: function (feature, layer) {
+            let prop = feature.properties;
+            layer.bindPopup(`
+
+            <h3>${BETRIEBE}</h3>
+            <h4>${BETRIEBSART_TXT} ${KATEGORIE_TXT}</h4>
+            <hr>
+            Addr.: ${ADRESSE}<br>
+            Tel.: ${KONTAKT_TEL} ">${prop.KONTAKT_TEL}</a><br>
+            <a href="mailto:${prop.KONTAKT_EMAIL}">${prop.KONTAKT_EMAIL}</a><br>
+            <a href="${prop.WEBLINK1}">Hompage</a><br>
+                
+            `);
+            //console.log(feature.properties, prop.NAME);  
+        }
+    }).addTo(themaLayer.hotels);
+
+    //console.log(response, jsondata)
+
+}
+showHotels("https://data.wien.gv.at/daten/geo?service=WFS&request=GetFeature&version=1.1.0&typeName=ogdwien:UNTERKUNFTOGD&srsName=EPSG:4326&outputFormat=json")
+
+
+
 
 map.addControl(new L.Control.Fullscreen({
     title: {
