@@ -12,6 +12,17 @@ let map = L.map("map").setView([
     stephansdom.lat, stephansdom.lng
 ], 15);
 
+// Leaflet Hash
+new L.Hash(map);
+
+// Leaflet MiniMap
+var miniMap = new L.Control.MiniMap(
+    L.tileLayer.provider("BasemapAT.basemap"), {
+        toggleDisplay: true,
+        minimized: true
+    }
+).addTo(map);
+
 // thematische Layer
 let themaLayer = {
     stops: L.featureGroup().addTo(map),
@@ -178,6 +189,23 @@ async function showHotels(url) {
     let jsondata = await response.json();
     L.geoJSON(jsondata, {
         pointToLayer: function(feature, latlng) {
+           
+            let prop = feature.properties;
+            let hotelIcon = "";
+            if (prop.KATEGORIE_TXT === "1*") {
+                hotelIcon = "icons/hotel_1star.png";
+            } else if (prop.KATEGORIE_TXT === "2*") {
+                hotelIcon = "icons/hotel_2stars.png";
+            } else if (prop.KATEGORIE_TXT === "3*") {
+                hotelIcon = "icons/hotel_3stars.png";
+            } else if (prop.KATEGORIE_TXT === "4*") {
+                hotelIcon = "icons/hotel_4stars.png";
+            } else if (prop.KATEGORIE_TXT === "5*") {
+                hotelIcon = "icons/hotel_5stars.png";
+            } else {
+                hotelIcon = "icons/hotel_0star.png";
+            }
+            
             return L.marker(latlng, {
                 icon: L.icon({
                     iconUrl: "icons/hotel.png",
